@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redirectr.Web", "src\Redire
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redirectr", "src\Redirectr\Redirectr.csproj", "{A29CD5CA-6957-4126-B3F4-A31438FAD08C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redirectr.Tests", "test\Redirectr.Tests\Redirectr.Tests.csproj", "{06751748-7C68-4570-870A-247935252B40}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,5 +48,17 @@ Global
 		{A29CD5CA-6957-4126-B3F4-A31438FAD08C}.Release|x64.Build.0 = Release|Any CPU
 		{A29CD5CA-6957-4126-B3F4-A31438FAD08C}.Release|x86.ActiveCfg = Release|Any CPU
 		{A29CD5CA-6957-4126-B3F4-A31438FAD08C}.Release|x86.Build.0 = Release|Any CPU
+		{06751748-7C68-4570-870A-247935252B40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06751748-7C68-4570-870A-247935252B40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06751748-7C68-4570-870A-247935252B40}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{06751748-7C68-4570-870A-247935252B40}.Debug|x64.Build.0 = Debug|Any CPU
+		{06751748-7C68-4570-870A-247935252B40}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{06751748-7C68-4570-870A-247935252B40}.Debug|x86.Build.0 = Debug|Any CPU
+		{06751748-7C68-4570-870A-247935252B40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06751748-7C68-4570-870A-247935252B40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06751748-7C68-4570-870A-247935252B40}.Release|x64.ActiveCfg = Release|Any CPU
+		{06751748-7C68-4570-870A-247935252B40}.Release|x64.Build.0 = Release|Any CPU
+		{06751748-7C68-4570-870A-247935252B40}.Release|x86.ActiveCfg = Release|Any CPU
+		{06751748-7C68-4570-870A-247935252B40}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

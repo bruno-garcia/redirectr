@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
@@ -22,19 +23,19 @@ namespace Redirectr
                 // BaseAddress exists/valid URL, ShortUrlPathPrefix is at least a slash or a valid path (/a/b/c/)
 
                 var shortenUrlPath = options.ShortenUrlPath;
-                if (!options.ShortenUrlPath.EndsWith("/"))
+                if (!options.ShortenUrlPath.EndsWith("/", StringComparison.Ordinal))
                 {
                     shortenUrlPath += "/";
                 }
 
                 var shortUrlPath = options.ShortUrlPath;
-                if (options.ShortUrlPath?.EndsWith("/") != true)
+                if (options.ShortUrlPath?.EndsWith("/", StringComparison.Ordinal) != true)
                 {
                     shortUrlPath += "/";
                 }
 
                 var baseAddress = options.BaseAddress;
-                if (!options.BaseAddress.EndsWith("/") && shortUrlPath?[0] != '/')
+                if (!options.BaseAddress.EndsWith("/", StringComparison.Ordinal) && shortUrlPath?[0] != '/')
                 {
                     baseAddress += "/";
                 }
@@ -74,7 +75,7 @@ namespace Redirectr
                     context.Response.Headers.TryAdd("Key", key);
 
                     context.Response.StatusCode = (int) HttpStatusCode.Created;
-                    await context.Response.CompleteAsync();
+                    await context.Response.CompleteAsync().ConfigureAwait(false);
                 });
 
                 endpoints.MapGet(shortUrlPath + "{key}", async context =>
@@ -90,7 +91,7 @@ namespace Redirectr
                         context.Response.StatusCode = (int) HttpStatusCode.NotFound;
                     }
 
-                    await context.Response.CompleteAsync();
+                    await context.Response.CompleteAsync().ConfigureAwait(false);
                 });
             });
             return builder;
