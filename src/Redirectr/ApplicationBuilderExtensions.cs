@@ -34,7 +34,7 @@ namespace Redirectr
                 }
 
                 var baseAddress = options.BaseAddress;
-                if (!options.BaseAddress.EndsWith("/") || shortUrlPath?[0] == '/')
+                if (!options.BaseAddress.EndsWith("/") && shortUrlPath?[0] != '/')
                 {
                     baseAddress += "/";
                 }

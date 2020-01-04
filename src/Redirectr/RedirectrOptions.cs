@@ -38,7 +38,7 @@ namespace Redirectr
         /// </summary>
         /// <example>
         /// Having https://nugettrends.com in this list means a URL shortening request for
-        /// https://nugettrends.com/packages?months=12&ids=Sentry&ids=Sentry.Protocol
+        /// https://nugettrends.com/packages?months=12&amp;ids=Sentry&amp;ids=Sentry.Protocol
         /// would be accepted, but for https://www.nugettrends... would not.
         /// </example>
         public HashSet<string>? DestinationWhiteListedDomains { get; set; }
