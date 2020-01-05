@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -11,7 +10,7 @@ using Microsoft.Extensions.Options;
 namespace Redirectr
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    internal static class ApplicationBuilderExtensions
+    public static class ApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseRedirectr(this IApplicationBuilder builder)
         {
@@ -19,6 +18,11 @@ namespace Redirectr
             {
                 var generator = endpoints.ServiceProvider.GetRequiredService<KeyGenerator>();
                 var options = endpoints.ServiceProvider.GetRequiredService<IOptions<RedirectrOptions>>().Value;
+                if (string.IsNullOrWhiteSpace(options.BaseAddress))
+                {
+                    throw new InvalidOperationException(
+                        "The BaseAddress options is required to build the short URLs.");
+                }
                 // TODO: Validate options such as, options.ShortenUrlPathTemplate is not null or empty
                 // BaseAddress exists/valid URL, ShortUrlPathPrefix is at least a slash or a valid path (/a/b/c/)
 

@@ -2,6 +2,9 @@ using System.Collections.Generic;
 
 namespace Redirectr
 {
+    /// <summary>
+    /// Options to configure Redirectr
+    /// </summary>
     public class RedirectrOptions
     {
         // NOTE: This is very naïve. A URL such as https://duckduckgo.com/?q=naïve is totally valid.

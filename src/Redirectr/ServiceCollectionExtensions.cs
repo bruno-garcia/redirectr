@@ -1,17 +1,22 @@
 using System.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace Redirectr
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    internal static class ServiceCollectionExtensions
+    public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddRedirectr(this IServiceCollection serviceCollection)
+        public static IServiceCollection AddRedirectr(this IServiceCollection services)
         {
-            serviceCollection.TryAddSingleton<KeyGenerator>();
-            serviceCollection.TryAddSingleton<IRedirectrStore, InMemoryRedirectrStore>();
-            return serviceCollection;
+            services.TryAddSingleton<KeyGenerator>();
+            services.TryAddSingleton<IRedirectrStore, InMemoryRedirectrStore>();
+
+            services.TryAddEnumerable(
+                ServiceDescriptor.Transient<IConfigureOptions<RedirectrOptions>, RedirectrOptionsSetup>());
+
+            return services;
         }
     }
 }
