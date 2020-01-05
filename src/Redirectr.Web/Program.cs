@@ -14,8 +14,8 @@ namespace Redirectr.Web
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    // webBuilder.UseRedirectr();
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseRedirectr();
                 });
     }
 }

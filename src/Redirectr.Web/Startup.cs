@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,23 @@ namespace Redirectr.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var section = _configuration.GetSection("Redirectr");
+            services.Configure<RedirectrOptions>(section);
+            services.Configure<RedirectrOptions>(c =>
+            {
+                if (c.BaseAddress is null)
+                {
+                    var baseAddress = _configuration?.GetValue<string>("URLS")?
+                                          .Split(";")?
+                                          .FirstOrDefault()
+                                      // With TestServer 'URLS' isn't defined
+                                      ?? "http://localhost";
+
+                    c.BaseAddress = baseAddress;
+                }
+            });
+
+            services.AddRedirectr();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -23,7 +41,10 @@ namespace Redirectr.Web
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseRouting();
+            app.UseRedirectr();
         }
     }
 }
