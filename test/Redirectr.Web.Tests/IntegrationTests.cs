@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Xunit;
 
@@ -16,8 +17,12 @@ namespace Redirectr.Web.Tests
         [Fact]
         public async Task RoundTrip()
         {
-            var options = _factory.Services.GetRequiredService<IOptions<RedirectrOptions>>().Value;
-            var client = _factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+            var factory = _factory.WithWebHostBuilder(b =>
+                b.ConfigureServices(s =>
+                    s.Replace(ServiceDescriptor.Singleton<IRedirectrStore, InMemoryRedirectrStore>())));
+
+            var options = factory.Services.GetRequiredService<IOptions<RedirectrOptions>>().Value;
+            var client = factory.CreateClient(new WebApplicationFactoryClientOptions {AllowAutoRedirect = false});
 
             const string longUrl = "https://nugettrends.com/packages?months=12&ids=Sentry";
             var shorten = $"/{options.ShortenUrlPath}?url={HttpUtility.UrlEncode(longUrl)}";

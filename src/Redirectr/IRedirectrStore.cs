@@ -1,12 +1,12 @@
-using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Redirectr
 {
     public interface IRedirectrStore
     {
-        ValueTask<bool> TryGetUrl(string key, [NotNullWhen(true)] out string? url);
-        ValueTask<bool> TryGetKey(string url, [NotNullWhen(true)] out string? key);
-        ValueTask RegisterUrl(in RegistrationOptions options);
+        ValueTask<string?> GetUrl(string key, CancellationToken token);
+        ValueTask<string?> GetKey(string url, CancellationToken token);
+        ValueTask RegisterUrl(RegistrationOptions options, CancellationToken token);
     }
 }

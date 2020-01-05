@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Redirectr
@@ -9,22 +9,18 @@ namespace Redirectr
     {
         private readonly ConcurrentDictionary<string, string> _urls = new ConcurrentDictionary<string, string>();
 
-        public ValueTask<bool> TryGetUrl(string key, [NotNullWhen(true)] out string? url)
-            => new ValueTask<bool>(_urls.TryGetValue(key, out url));
-
-        public ValueTask<bool> TryGetKey(string url, [NotNullWhen(true)] out string? key)
+        public ValueTask<string?> GetKey(string url, CancellationToken token)
         {
-            if (_urls.FirstOrDefault(u => u.Value == url) is {} pair && pair.Key is {})
-            {
-                key = pair.Key;
-                return new ValueTask<bool>(true);
-            }
-
-            key = null;
-            return new ValueTask<bool>(false);
+            return _urls.FirstOrDefault(u => u.Value == url)
+                       is {} pair && pair.Key is {}
+                ? new ValueTask<string?>(pair.Key)
+                : new ValueTask<string?>(null as string);
         }
 
-        public ValueTask RegisterUrl(in RegistrationOptions options)
+        public ValueTask<string?> GetUrl(string key, CancellationToken token)
+            => new ValueTask<string?>(_urls.TryGetValue(key, out var url) ? url : null);
+
+        public ValueTask RegisterUrl(RegistrationOptions options, CancellationToken token)
         {
             // TODO: support TTL
             _urls.TryAdd(options.Key, options.Url);

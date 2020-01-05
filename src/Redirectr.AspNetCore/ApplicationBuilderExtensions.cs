@@ -49,10 +49,12 @@ namespace Microsoft.AspNetCore.Builder
                     if ((useTtl = options.AllowDomainTtl
                                   && context.Request.Query.TryGetValue("ttl", out var ttl)
                                   && int.TryParse(ttl, out intTtl))
-                        || !await store.TryGetKey(url, out var key))
+                        || !(await store.GetKey(url, context.RequestAborted) is {} key))
                     {
                         key = generator.Generate();
-                        await store.RegisterUrl(new RegistrationOptions(key, url, useTtl ? intTtl : (int?)null));
+                        await store.RegisterUrl(
+                            new RegistrationOptions(key, url, useTtl ? intTtl : (int?)null),
+                            context.RequestAborted);
                     }
 
                     context.Response.Headers.Add("Location", baseAddressShortUrl + key);
@@ -65,7 +67,7 @@ namespace Microsoft.AspNetCore.Builder
                 endpoints.MapGet(shortUrlPath + "{key}", async context =>
                 {
                     var key = (string)context.GetRouteValue("key");
-                    if (await store.TryGetUrl(key, out var url))
+                    if (await store.GetUrl(key, context.RequestAborted) is {} url)
                     {
                         context.Response.StatusCode = (int)HttpStatusCode.PermanentRedirect;
                         context.Response.Headers.Add("Location", url);

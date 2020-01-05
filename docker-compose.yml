@@ -1,0 +1,29 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres
+    restart: "no"
+    environment:
+      POSTGRES_PASSWORD: testdb
+    ports:
+      - "5420:5432"
+    networks:
+      - test
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  pgadmin:
+    environment:
+      PGADMIN_DEFAULT_EMAIL: test@user
+      PGADMIN_DEFAULT_PASSWORD: testdb
+    links:
+      - postgres
+    image: dpage/pgadmin4
+    ports:
+      - "8080:80"
+    networks:
+      - test
+    restart: "no"
+volumes:
+  pgdata:
+networks:
+  test:
