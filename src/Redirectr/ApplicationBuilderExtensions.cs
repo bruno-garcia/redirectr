@@ -19,28 +19,15 @@ namespace Redirectr
                 var generator = endpoints.ServiceProvider.GetRequiredService<KeyGenerator>();
                 var options = endpoints.ServiceProvider.GetRequiredService<IOptions<RedirectrOptions>>().Value;
 
-                var shortenUrlPath = options.ShortenUrlPath;
-                if (!options.ShortenUrlPath.EndsWith("/", StringComparison.Ordinal))
-                {
-                    shortenUrlPath += "/";
-                }
-
+                var shortenUrlPath = options.ShortenUrlPath.ToString();
                 var shortUrlPath = options.ShortUrlPath;
-                if (options.ShortUrlPath?.EndsWith("/", StringComparison.Ordinal) != true)
-                {
-                    shortUrlPath += "/";
-                }
 
                 var baseAddress = options.BaseAddress;
-                if (!options.BaseAddress.EndsWith("/", StringComparison.Ordinal) && shortUrlPath?[0] != '/')
-                {
-                    baseAddress += "/";
-                }
 
                 // baseAddress now is expected to only be concat to a key to result in a final shortened URL.
-                baseAddress += shortUrlPath;
+                var baseAddressShortUrl = new Uri(baseAddress, shortUrlPath!);
 
-                var whiteListCharactersRegex = new Regex(options.UrlCharacterWhiteList,
+                var whiteListCharactersRegex = new Regex(options.RegexUrlCharacterWhiteList,
                     RegexOptions.Compiled);
 
                 var store = endpoints.ServiceProvider.GetRequiredService<IRedirectrStore>();
@@ -68,7 +55,7 @@ namespace Redirectr
                         await store.RegisterUrl(new RegistrationOptions(key, url, useTtl ? intTtl : (int?)null));
                     }
 
-                    context.Response.Headers.Add("Location", baseAddress + key);
+                    context.Response.Headers.Add("Location", baseAddressShortUrl + key);
                     context.Response.Headers.Add("Key", key);
 
                     context.Response.StatusCode = (int)HttpStatusCode.Created;

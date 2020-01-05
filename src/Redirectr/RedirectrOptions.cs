@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,13 +14,13 @@ namespace Redirectr
             @"^[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\-._~:\/?#[\]\@\!\$\&\'\(\)\*\+\,\;\=]+$";
 
         [Required(ErrorMessage = "White list of characters regex is required to validate URLs to be shortened.")]
-        public string UrlCharacterWhiteList { get; set; } = CharactersWhitelistRegexPattern;
+        public string RegexUrlCharacterWhiteList { get; set; } = CharactersWhitelistRegexPattern;
 
         /// <summary>
         /// BaseAddress for shortened URLs.
         /// </summary>
         [Required(ErrorMessage = "The BaseAddress is required to build the short URLs.")]
-        public string BaseAddress { get; set; } = default!; // https://nugt.net
+        public Uri BaseAddress { get; set; } = default!; // https://nugt.net
 
         /// <summary>
         /// The URL path to shorten links via a PUT request.
@@ -29,7 +30,7 @@ namespace Redirectr
         /// http://localhost/shorten?url=https://nugt.net/example
         /// </example>
         [Required(ErrorMessage = "A ShortenUrlPath is required to receive requests to shorten URLs.")]
-        public string ShortenUrlPath { get; set; } = "shorten";
+        public Uri ShortenUrlPath { get; set; } = new Uri("shorten/", UriKind.Relative);
 
         /// <summary>
         /// The path for a short URL.
@@ -38,7 +39,7 @@ namespace Redirectr
         /// null or an empty string would mean the root i.e: GET /h6d0P
         /// Value 's' would mean short URLs are under /s/ i.e: GET /a/h6d0P
         /// </example>
-        public string? ShortUrlPath { get; set; } = "s";
+        public Uri? ShortUrlPath { get; set; } = new Uri("s/", UriKind.Relative);
 
         /// <summary>
         /// Used to compare against destination URLs

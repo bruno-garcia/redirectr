@@ -19,8 +19,8 @@ namespace Redirectr.Web.Tests
             var options = _factory.Services.GetRequiredService<IOptions<RedirectrOptions>>().Value;
             var client = _factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
 
-            var longUrl = "https://nugettrends.com/packages?months=12&ids=Sentry";
-            var shorten = "/" + options.ShortenUrlPath + "?url=" + HttpUtility.UrlEncode(longUrl);
+            const string longUrl = "https://nugettrends.com/packages?months=12&ids=Sentry";
+            var shorten = $"/{options.ShortenUrlPath}?url={HttpUtility.UrlEncode(longUrl)}";
 
             var response = await client.PutAsync(shorten, null);
 
