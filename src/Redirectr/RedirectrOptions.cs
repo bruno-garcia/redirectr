@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Redirectr
 {
@@ -11,11 +12,13 @@ namespace Redirectr
         private const string CharactersWhitelistRegexPattern =
             @"^[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\-._~:\/?#[\]\@\!\$\&\'\(\)\*\+\,\;\=]+$";
 
+        [Required(ErrorMessage = "White list of characters regex is required to validate URLs to be shortened.")]
         public string UrlCharacterWhiteList { get; set; } = CharactersWhitelistRegexPattern;
 
         /// <summary>
         /// BaseAddress for shortened URLs.
         /// </summary>
+        [Required(ErrorMessage = "The BaseAddress is required to build the short URLs.")]
         public string BaseAddress { get; set; } = default!; // https://nugt.net
 
         /// <summary>
@@ -25,6 +28,7 @@ namespace Redirectr
         /// Default value would mean baseAddress + shorten:
         /// http://localhost/shorten?url=https://nugt.net/example
         /// </example>
+        [Required(ErrorMessage = "A ShortenUrlPath is required to receive requests to shorten URLs.")]
         public string ShortenUrlPath { get; set; } = "shorten";
 
         /// <summary>
@@ -49,6 +53,7 @@ namespace Redirectr
         /// <summary>
         /// The max length of the URL to shorten.
         /// </summary>
+        [Range(1, int.MaxValue, ErrorMessage = "Out of range.")]
         public int MaxUrlLength { get; set; } = 2048;
 
         /// <summary>

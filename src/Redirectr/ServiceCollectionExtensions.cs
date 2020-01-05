@@ -1,8 +1,8 @@
 using System.ComponentModel;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace Redirectr
 {
@@ -14,12 +14,20 @@ namespace Redirectr
             services.TryAddSingleton<KeyGenerator>();
             services.TryAddSingleton<IRedirectrStore, InMemoryRedirectrStore>();
 
-            services.TryAddEnumerable(
-                ServiceDescriptor.Transient<IConfigureOptions<RedirectrOptions>, RedirectrOptionsSetup>());
-
             services
                 .AddOptions<RedirectrOptions>()
-                .Configure<IConfiguration>((o, c) => c.Bind("Redirectr", o));
+                .Configure<IConfiguration>((o, c) => c.Bind("Redirectr", o))
+                .PostConfigure((RedirectrOptions o, IConfiguration c) =>
+                {
+                    if (string.IsNullOrWhiteSpace(o.BaseAddress))
+                    {
+                        o.BaseAddress = c.GetValue<string>("URLS")?
+                                          .Split(";")?
+                                          .FirstOrDefault()
+                                      ?? "http://localhost"; // With TestServer 'URLS' isn't defined
+                    }
+                })
+                .ValidateDataAnnotations();
 
             return services;
         }
