@@ -26,14 +26,13 @@ namespace Redirectr
                 {
                     if (c.BaseAddress is null)
                     {
-                        c.BaseAddress = context.Configuration.GetValue<string>("URLS")
-                            .Split(";")
-                            .FirstOrDefault();
+                        var baseAddress = context.Configuration?.GetValue<string>("URLS")?
+                            .Split(";")?
+                            .FirstOrDefault()
+                            // With TestServer 'URLS' isn't defined
+                            ?? "http://localhost";
 
-                        if (c.BaseAddress is null)
-                        {
-                            throw new InvalidOperationException("No base address for redirect.");
-                        }
+                        c.BaseAddress = baseAddress;
                     }
                 });
 

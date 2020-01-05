@@ -1,14 +1,12 @@
-using System;
 using Xunit;
 
 namespace Redirectr.Tests
 {
-    public class UnitTest1
+    public class KeyGeneratorTests
     {
         [Fact]
         public void Test1()
         {
-
         }
     }
 }

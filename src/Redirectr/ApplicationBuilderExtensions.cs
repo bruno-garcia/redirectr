@@ -55,7 +55,7 @@ namespace Redirectr
                         || url[0].Length > options.MaxUrlLength
                         || !whiteListCharactersRegex.IsMatch(url))
                     {
-                        context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
+                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                         // TODO: Add body with reason
                         return;
                     }
@@ -68,27 +68,28 @@ namespace Redirectr
                         || !await store.TryGetKey(url, out var key))
                     {
                         key = generator.Generate();
-                        await store.RegisterUrl(new RegistrationOptions(key, url, useTtl ? intTtl : (int?) null));
+                        await store.RegisterUrl(new RegistrationOptions(key, url, useTtl ? intTtl : (int?)null));
                     }
 
-                    context.Response.Headers.TryAdd("Location", baseAddress + key);
-                    context.Response.Headers.TryAdd("Key", key);
+                    context.Response.Headers.Add("Location", baseAddress + key);
+                    context.Response.Headers.Add("Key", key);
 
-                    context.Response.StatusCode = (int) HttpStatusCode.Created;
+                    context.Response.StatusCode = (int)HttpStatusCode.Created;
                     await context.Response.CompleteAsync().ConfigureAwait(false);
                 });
 
                 endpoints.MapGet(shortUrlPath + "{key}", async context =>
                 {
-                    var key = (string) context.GetRouteValue("key");
+                    var key = (string)context.GetRouteValue("key");
                     if (await store.TryGetUrl(key, out var url))
                     {
-                        context.Response.StatusCode = (int) HttpStatusCode.MovedPermanently;
+                        context.Response.StatusCode = (int)HttpStatusCode.PermanentRedirect;
                         context.Response.Headers.Add("Location", url);
+                        context.Response.Headers.Add("Key", key);
                     }
                     else
                     {
-                        context.Response.StatusCode = (int) HttpStatusCode.NotFound;
+                        context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     }
 
                     await context.Response.CompleteAsync().ConfigureAwait(false);
