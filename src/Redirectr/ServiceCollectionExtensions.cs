@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -15,6 +16,10 @@ namespace Redirectr
 
             services.TryAddEnumerable(
                 ServiceDescriptor.Transient<IConfigureOptions<RedirectrOptions>, RedirectrOptionsSetup>());
+
+            services
+                .AddOptions<RedirectrOptions>()
+                .Configure<IConfiguration>((o, c) => c.Bind("Redirectr", o));
 
             return services;
         }

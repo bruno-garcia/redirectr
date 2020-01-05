@@ -12,7 +12,6 @@ namespace Redirectr
 
         public void Configure(RedirectrOptions options)
         {
-            _configuration.GetSection("Redirectr").Bind(options);
             if (options.BaseAddress is null)
             {
                 options.BaseAddress = _configuration?

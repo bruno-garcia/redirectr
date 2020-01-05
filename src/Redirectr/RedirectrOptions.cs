@@ -32,9 +32,9 @@ namespace Redirectr
         /// </summary>
         /// <example>
         /// null or an empty string would mean the root i.e: GET /h6d0P
-        /// Value 'a' would mean short URLs are under /a/ i.e: GET /a/h6d0P
+        /// Value 's' would mean short URLs are under /s/ i.e: GET /a/h6d0P
         /// </example>
-        public string? ShortUrlPath { get; set; }
+        public string? ShortUrlPath { get; set; } = "s";
 
         /// <summary>
         /// Used to compare against destination URLs
