@@ -10,11 +10,11 @@ namespace Redirectr
     public class RedirectrOptions
     {
         // NOTE: This is very naïve. A URL such as https://duckduckgo.com/?q=naïve is totally valid.
-        internal const string CharactersWhitelistRegexPattern =
+        public const string DefaultCharactersWhitelistRegexPattern =
             @"^[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\-._~:\/?#[\]\@\!\$\&\'\(\)\*\+\,\;\=]+$";
 
         [Required(ErrorMessage = "White list of characters regex is required to validate URLs to be shortened.")]
-        public string RegexUrlCharacterWhiteList { get; set; } = CharactersWhitelistRegexPattern;
+        public string RegexUrlCharacterWhiteList { get; set; } = DefaultCharactersWhitelistRegexPattern;
 
         /// <summary>
         /// BaseAddress for shortened URLs.

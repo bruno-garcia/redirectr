@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Redirectr\Redirectr.csproj" />
+    <ProjectReference Include="..\..\src\Redirectr.AspNetCore\Redirectr.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>

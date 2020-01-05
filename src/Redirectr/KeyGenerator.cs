@@ -4,25 +4,33 @@ using System.Security.Cryptography;
 
 namespace Redirectr
 {
-    // TODO: extract interface to allow user defined implementation registering in DI
-    internal class KeyGenerator : IDisposable
+    public interface IKeyGenerator
     {
+        string Generate();
+    }
+
+    public class KeyGenerator : IDisposable, IKeyGenerator
+    {
+        private readonly int _keyLength;
         private readonly RandomNumberGenerator _randomNumberGenerator;
         private const string Characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-        public KeyGenerator(RandomNumberGenerator? randomNumberGenerator = null)
-            => _randomNumberGenerator = randomNumberGenerator ?? new RNGCryptoServiceProvider();
+        public KeyGenerator(int keyLength = 7, RandomNumberGenerator? randomNumberGenerator = null)
+        {
+            if (keyLength <= 0) throw new ArgumentOutOfRangeException(nameof(keyLength), "Key length must be at least 1.");
+            _keyLength = keyLength;
+            _randomNumberGenerator = randomNumberGenerator ?? new RNGCryptoServiceProvider();
+        }
 
         public string Generate()
         {
             var higherBound = Characters.Length;
 
-            const int keyLength = 7;
             Span<byte> randomBuffer = stackalloc byte[4];
-            var stringBaseBuffer = ArrayPool<char>.Shared.Rent(keyLength);
+            var stringBaseBuffer = ArrayPool<char>.Shared.Rent(_keyLength);
             try
             {
-                for (var i = 0; i < keyLength; i++)
+                for (var i = 0; i < _keyLength; i++)
                 {
                     _randomNumberGenerator.GetBytes(randomBuffer);
                     var generatedValue = Math.Abs(BitConverter.ToInt32(randomBuffer));
@@ -30,7 +38,7 @@ namespace Redirectr
                     stringBaseBuffer[i] = Characters[index];
                 }
 
-                return new string(stringBaseBuffer[..keyLength]);
+                return new string(stringBaseBuffer[.._keyLength]);
             }
             finally
             {

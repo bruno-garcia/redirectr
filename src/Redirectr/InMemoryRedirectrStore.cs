@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Redirectr
 {
-    internal class InMemoryRedirectrStore : IRedirectrStore
+    public class InMemoryRedirectrStore : IRedirectrStore
     {
         private readonly ConcurrentDictionary<string, string> _urls = new ConcurrentDictionary<string, string>();
 

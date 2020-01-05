@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Xunit;
 
-namespace Redirectr.Tests
+namespace Redirectr.AspNetCore.Tests
 {
     public class ServiceCollectionExtensionTests
     {
@@ -50,7 +50,7 @@ namespace Redirectr.Tests
             Assert.Equal("shorten/", actual.ShortenUrlPath.ToString());
             Assert.Equal("s/", actual.ShortUrlPath!.ToString());
             Assert.Null(actual.DestinationWhiteListedDomains);
-            Assert.Equal(RedirectrOptions.CharactersWhitelistRegexPattern, actual.RegexUrlCharacterWhiteList);
+            Assert.Equal(RedirectrOptions.DefaultCharactersWhitelistRegexPattern, actual.RegexUrlCharacterWhiteList);
         }
 
         [Fact]

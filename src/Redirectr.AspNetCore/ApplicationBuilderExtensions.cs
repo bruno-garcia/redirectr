@@ -2,12 +2,13 @@ using System;
 using System.ComponentModel;
 using System.Net;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Redirectr;
 
-namespace Redirectr
+// ReSharper disable once CheckNamespace -- Discoverability
+namespace Microsoft.AspNetCore.Builder
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class ApplicationBuilderExtensions
@@ -16,7 +17,7 @@ namespace Redirectr
         {
             builder.UseEndpoints(endpoints =>
             {
-                var generator = endpoints.ServiceProvider.GetRequiredService<KeyGenerator>();
+                var generator = endpoints.ServiceProvider.GetRequiredService<IKeyGenerator>();
                 var options = endpoints.ServiceProvider.GetRequiredService<IOptions<RedirectrOptions>>().Value;
 
                 var shortenUrlPath = options.ShortenUrlPath.ToString();
@@ -27,8 +28,7 @@ namespace Redirectr
                 // baseAddress now is expected to only be concat to a key to result in a final shortened URL.
                 var baseAddressShortUrl = new Uri(baseAddress, shortUrlPath!);
 
-                var whiteListCharactersRegex = new Regex(options.RegexUrlCharacterWhiteList,
-                    RegexOptions.Compiled);
+                var whiteListCharactersRegex = new Regex(options.RegexUrlCharacterWhiteList, RegexOptions.Compiled);
 
                 var store = endpoints.ServiceProvider.GetRequiredService<IRedirectrStore>();
 

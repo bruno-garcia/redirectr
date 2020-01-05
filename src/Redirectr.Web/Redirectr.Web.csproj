@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Redirectr\Redirectr.csproj" />
+    <ProjectReference Include="..\Redirectr.AspNetCore\Redirectr.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>
