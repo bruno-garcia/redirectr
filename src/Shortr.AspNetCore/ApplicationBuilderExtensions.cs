@@ -59,6 +59,7 @@ namespace Microsoft.AspNetCore.Builder
 
                     context.Response.Headers.Add("Location", baseAddressShortUrl + key);
                     context.Response.Headers.Add("Key", key);
+                    context.Response.Headers.Add("Access-Control-Expose-Headers", "Location,Key");
 
                     context.Response.StatusCode = (int)HttpStatusCode.Created;
                     await context.Response.CompleteAsync().ConfigureAwait(false);
