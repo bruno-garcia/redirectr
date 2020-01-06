@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shortr.AspNetCore\Shortr.AspNetCore.csproj" />
+    <ProjectReference Include="..\Shortr.Npgsql\Shortr.Npgsql.csproj" />
+  </ItemGroup>
+
+</Project>
