@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
@@ -49,7 +50,7 @@ namespace Shortr.AspNetCore.Tests
             Assert.Equal(2048, actual.MaxUrlLength);
             Assert.Equal("shorten/", actual.ShortenUrlPath.ToString());
             Assert.Equal("s/", actual.ShortUrlPath!.ToString());
-            Assert.Null(actual.DestinationWhiteListedDomains);
+            Assert.Null(actual.DestinationWhiteListedBaseAddresses);
             Assert.Equal(ShortrOptions.DefaultCharactersWhitelistRegexPattern, actual.RegexUrlCharacterWhiteList);
         }
 
@@ -60,14 +61,14 @@ namespace Shortr.AspNetCore.Tests
             const int expectedMaxUrlLength = 100;
             const string expectedShortenUrlPath = "c/";
             const string expectedShortUrlPath = "u/";
-            var expectedDestinationWhiteListedDomains = new HashSet<string> {"test", "test2"};
+            var expectedDestinationWhiteListedDomains = new List<Uri> {new Uri("http://a"), new Uri("http://b")};
             const string expectedUrlCharacterWhiteList = ".*";
             _fixture.DefaultConfiguration[$"Shortr:{nameof(ShortrOptions.BaseAddress)}"] = expectedBaseAddress;
             _fixture.DefaultConfiguration[$"Shortr:{nameof(ShortrOptions.MaxUrlLength)}"] = expectedMaxUrlLength.ToString();
             _fixture.DefaultConfiguration[$"Shortr:{nameof(ShortrOptions.ShortenUrlPath)}"] = expectedShortenUrlPath;
             _fixture.DefaultConfiguration[$"Shortr:{nameof(ShortrOptions.ShortUrlPath)}"] = expectedShortUrlPath;
-            _fixture.DefaultConfiguration[$"Shortr:{nameof(ShortrOptions.DestinationWhiteListedDomains)}:0"] = "test";
-            _fixture.DefaultConfiguration[$"Shortr:{nameof(ShortrOptions.DestinationWhiteListedDomains)}:2"] = "test2";
+            _fixture.DefaultConfiguration[$"Shortr:{nameof(ShortrOptions.DestinationWhiteListedBaseAddresses)}:0"] = "http://a";
+            _fixture.DefaultConfiguration[$"Shortr:{nameof(ShortrOptions.DestinationWhiteListedBaseAddresses)}:2"] = "http://b";
             _fixture.DefaultConfiguration[$"Shortr:{nameof(ShortrOptions.RegexUrlCharacterWhiteList)}"] = expectedUrlCharacterWhiteList;
 
             var sut = _fixture.GetSut();
@@ -77,7 +78,7 @@ namespace Shortr.AspNetCore.Tests
             Assert.Equal(expectedMaxUrlLength, actual.MaxUrlLength);
             Assert.Equal(expectedShortenUrlPath, actual.ShortenUrlPath.ToString());
             Assert.Equal(expectedShortUrlPath, actual.ShortUrlPath!.ToString());
-            Assert.True(expectedDestinationWhiteListedDomains.SequenceEqual(actual.DestinationWhiteListedDomains));
+            Assert.True(expectedDestinationWhiteListedDomains.SequenceEqual(actual.DestinationWhiteListedBaseAddresses));
             Assert.Equal(expectedUrlCharacterWhiteList, actual.RegexUrlCharacterWhiteList);
         }
 

@@ -9,6 +9,8 @@ namespace Shortr
     /// </summary>
     public class ShortrOptions
     {
+        internal const int DefaultMaxUrlLength = 2048;
+
         // NOTE: This is very naïve. A URL such as https://duckduckgo.com/?q=naïve is totally valid.
         public const string DefaultCharactersWhitelistRegexPattern =
             @"^[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\-._~:\/?#[\]\@\!\$\&\'\(\)\*\+\,\;\=]+$";
@@ -49,13 +51,13 @@ namespace Shortr
         /// https://nugettrends.com/packages?months=12&amp;ids=Sentry&amp;ids=Sentry.Protocol
         /// would be accepted, but for https://www.nugettrends... would not.
         /// </example>
-        public HashSet<string>? DestinationWhiteListedDomains { get; set; }
+        public IEnumerable<Uri>? DestinationWhiteListedBaseAddresses { get; set; }
 
         /// <summary>
         /// The max length of the URL to shorten.
         /// </summary>
         [Range(1, int.MaxValue, ErrorMessage = "Out of range.")]
-        public int MaxUrlLength { get; set; } = 2048;
+        public int MaxUrlLength { get; set; } = DefaultMaxUrlLength;
 
         /// <summary>
         /// Whether shorten URL request can specify a TTL.

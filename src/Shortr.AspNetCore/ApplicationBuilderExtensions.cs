@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Net;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,16 +29,14 @@ namespace Microsoft.AspNetCore.Builder
                 // baseAddress now is expected to only be concat to a key to result in a final shortened URL.
                 var baseAddressShortUrl = new Uri(baseAddress, shortUrlPath!);
 
-                var whiteListCharactersRegex = new Regex(options.RegexUrlCharacterWhiteList, RegexOptions.Compiled);
-
                 var store = endpoints.ServiceProvider.GetRequiredService<IShortrStore>();
+                var urlValidation = endpoints.ServiceProvider.GetRequiredService<UrlValidation>();
 
                 endpoints.MapPut(shortenUrlPath, async context =>
                 {
                     if (!context.Request.Query.TryGetValue("url", out var url)
                         || string.IsNullOrWhiteSpace(url)
-                        || url[0].Length > options.MaxUrlLength
-                        || !whiteListCharactersRegex.IsMatch(url))
+                        || !urlValidation.IsValidUrl(url[0]))
                     {
                         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                         // TODO: Add body with reason

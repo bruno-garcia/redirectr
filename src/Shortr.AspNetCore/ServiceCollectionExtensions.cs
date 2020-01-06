@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Shortr;
 
 // ReSharper disable once CheckNamespace -- Discoverability
@@ -14,8 +15,10 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddShortr(this IServiceCollection services)
         {
+            services.TryAddSingleton<UrlValidation>();
             services.TryAddSingleton<IKeyGenerator, KeyGenerator>();
             services.TryAddSingleton<IShortrStore, InMemoryShortrStore>();
+            services.AddSingleton(c => c.GetService<IOptions<ShortrOptions>>().Value);
 
             services
                 .AddOptions<ShortrOptions>()
