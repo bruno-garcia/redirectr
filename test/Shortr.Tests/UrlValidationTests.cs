@@ -20,21 +20,25 @@ namespace Shortr.Tests
         private readonly Fixture _fixture = new Fixture();
 
         [Theory]
-        [InlineData(false, (string?)null, false)]
-        [InlineData(false, "", false)]
-        [InlineData(false, "[", false)]
-        [InlineData(false, "/relative", false)]
-        [InlineData(false, @"\\relative", false)]
-        [InlineData(false, "http://localhost/\r", false)]
-        [InlineData(false, "http://localhost/ø", false)]
-        [InlineData(false, "http://localho\0st", false)]
-        [InlineData(false, "file://localhost", false)]
-        [InlineData(false, "smb://localhost", false)]
-        [InlineData(true, "http://localhost", true)]
+        [InlineData(true, (string?)null, false)] // invalid URL
+        [InlineData(true, "", false)] // invalid URL
+        [InlineData(true, "[", false)] // invalid URL
+        [InlineData(true, "/relative", false)] // relative
+        [InlineData(true, @"\\relative", false)] // relative path
+        [InlineData(true, "http://localhost/\r", false)] // invalid char
+        [InlineData(true, "http://localhost/ø", false)] // invalid char (for now)
+        [InlineData(true, "http://localho\0st", false)] // invalid char
+        [InlineData(true, "file://localhost", false)] // invalid scheme
+        [InlineData(true, "smb://localhost", false)] // invalid scheme
         [InlineData(true, "https://localhost", true)]
         [InlineData(true, "http://localhost:1234", true)]
-        [InlineData(true, "http://localhost/", true)]
         [InlineData(true, "https://localhost/", true)]
+        [InlineData(true, "http://localhost/", true)]
+        [InlineData(false, "https://nugettrends.com/", true)] // base address is OK
+        [InlineData(true, "https://nugettrends.com/s/", false)] // link to shortr default endpoint
+        [InlineData(true, "https://nugettrends.com/shorten/", false)] // link to shortr default endpoint
+        [InlineData(true, "http://localhost", true)]
+        [InlineData(false, "http://localhost", false)] // URL not whitelisted
         public void IsValidUrl_AllowRedirectToAnyDomain_TestCases(bool allowRedirectToAnyDomain, string? url, bool isValid)
         {
             _fixture.Options.AllowRedirectToAnyDomain = allowRedirectToAnyDomain;

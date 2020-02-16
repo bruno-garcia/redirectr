@@ -58,6 +58,12 @@ namespace Shortr
                     return false;
                 }
 
+                // If any URL is OK, just return here.
+                if (_options.AllowRedirectToAnyDomain)
+                {
+                    return true;
+                }
+
                 // Base address is allowed by default
                 if (_options.BaseAddress.IsBaseOf(uri))
                 {
@@ -70,8 +76,8 @@ namespace Shortr
                     return whiteList.Any(u => u.IsBaseOf(uri));
                 }
 
-                // No domain to match, allow based on configuration.
-                return _options.AllowRedirectToAnyDomain;
+                // No rule matched, so it's not valid.
+                return false;
             }
             catch
             {
