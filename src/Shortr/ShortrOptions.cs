@@ -70,6 +70,6 @@ namespace Shortr
         /// <remarks>
         /// This allows the creation of links that expire.
         /// </remarks>
-        public bool AllowDomainTtl { get; set; } = false;
+        public bool AllowDomainTtl { get; set; }
     }
 }
