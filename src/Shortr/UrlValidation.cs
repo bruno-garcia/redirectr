@@ -58,14 +58,20 @@ namespace Shortr
                     return false;
                 }
 
+                // Base address is allowed by default
+                if (_options.BaseAddress.IsBaseOf(uri))
+                {
+                    return true;
+                }
+
                 // If it's whitelisted, it's set.
                 if (_options.DestinationWhiteListedBaseAddresses is {} whiteList)
                 {
                     return whiteList.Any(u => u.IsBaseOf(uri));
                 }
 
-                // No domain to match, allow redirect to any location
-                return true;
+                // No domain to match, allow based on configuration.
+                return _options.AllowRedirectToAnyDomain;
             }
             catch
             {

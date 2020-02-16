@@ -20,24 +20,26 @@ namespace Shortr.Tests
         private readonly Fixture _fixture = new Fixture();
 
         [Theory]
-        [InlineData((string?)null, false)]
-        [InlineData("", false)]
-        [InlineData("[", false)]
-        [InlineData("/relative", false)]
-        [InlineData(@"\\relative", false)]
-        [InlineData("http://localhost/\r", false)]
-        [InlineData("http://localhost/ø", false)]
-        [InlineData("http://localho\0st", false)]
-        [InlineData("file://localhost", false)]
-        [InlineData("smb://localhost", false)]
-        [InlineData("http://localhost", true)]
-        [InlineData("https://localhost", true)]
-        [InlineData("http://localhost:1234", true)]
-        [InlineData("http://localhost/", true)]
-        [InlineData("https://localhost/", true)]
-        public void IsValidUrl_DefaultOptions_TestCases(string? url, bool isValid)
-            => Assert.Equal(isValid, _fixture.GetSut().IsValidUrl(url!));
-
+        [InlineData(false, (string?)null, false)]
+        [InlineData(false, "", false)]
+        [InlineData(false, "[", false)]
+        [InlineData(false, "/relative", false)]
+        [InlineData(false, @"\\relative", false)]
+        [InlineData(false, "http://localhost/\r", false)]
+        [InlineData(false, "http://localhost/ø", false)]
+        [InlineData(false, "http://localho\0st", false)]
+        [InlineData(false, "file://localhost", false)]
+        [InlineData(false, "smb://localhost", false)]
+        [InlineData(true, "http://localhost", true)]
+        [InlineData(true, "https://localhost", true)]
+        [InlineData(true, "http://localhost:1234", true)]
+        [InlineData(true, "http://localhost/", true)]
+        [InlineData(true, "https://localhost/", true)]
+        public void IsValidUrl_AllowRedirectToAnyDomain_TestCases(bool allowRedirectToAnyDomain, string? url, bool isValid)
+        {
+            _fixture.Options.AllowRedirectToAnyDomain = allowRedirectToAnyDomain;
+            Assert.Equal(isValid, _fixture.GetSut().IsValidUrl(url!));
+        }
 
         [Fact]
         public void Ctor_NullBaseAddress_InvalidArgumentException()
@@ -57,8 +59,19 @@ namespace Shortr.Tests
         }
 
         [Fact]
+        public void IsValidUrl_SameAsDefaultLengthWithDefault_IsNotValid()
+        {
+            const string address = "http://domain.io/q=";
+            var queryLength = ShortrOptions.DefaultMaxUrlLength - address.Length;
+            var url = $"{address}{new string('a', queryLength)}";
+            var sut = _fixture.GetSut();
+            Assert.False(sut.IsValidUrl(url));
+        }
+
+        [Fact]
         public void IsValidUrl_SameAsDefaultLength_IsValid()
         {
+            _fixture.Options.AllowRedirectToAnyDomain = true;
             const string address = "http://domain.io/q=";
             var queryLength = ShortrOptions.DefaultMaxUrlLength - address.Length;
             var url = $"{address}{new string('a', queryLength)}";
@@ -69,6 +82,7 @@ namespace Shortr.Tests
         [Fact]
         public void IsValidUrl_SameAsBaseAddress_IsValid()
         {
+            _fixture.Options.AllowRedirectToAnyDomain = true;
             // Matches other locations in the same URL, except the short/shorten
             var url = new Uri("http://localhost:1324");
             _fixture.Options.BaseAddress = url;
@@ -77,7 +91,17 @@ namespace Shortr.Tests
         }
 
         [Fact]
-        public void IsValidUrl_SameAsBaseAddressWithPath_IsValid()
+        public void IsValidUrl_SameAsBaseAddressWithPathWithAllowRedirectToAnyDomain_IsValid()
+        {
+            _fixture.Options.AllowRedirectToAnyDomain = true;
+            var url = new Uri("http://localhost:1324");
+            _fixture.Options.BaseAddress = url;
+            var sut = _fixture.GetSut();
+            Assert.True(sut.IsValidUrl(new Uri(url, "something/else/").AbsoluteUri));
+        }
+
+        [Fact]
+        public void IsValidUrl_SameAsBaseAddressWithPathDefault_IsValid()
         {
             var url = new Uri("http://localhost:1324");
             _fixture.Options.BaseAddress = url;
@@ -108,8 +132,19 @@ namespace Shortr.Tests
         }
 
         [Fact]
-        public void IsValidUrl_DifferentThanBaseAddress_IsValid()
+        public void IsValidUrl_DifferentThanBaseAddressWithDefaultValues_IsNotValid()
         {
+            var baseUrl = new Uri($"http://localhost:1324");
+            var url = new Uri($"http://localhost:1325");
+            _fixture.Options.BaseAddress = baseUrl;
+            var sut = _fixture.GetSut();
+            Assert.False(sut.IsValidUrl(url.AbsoluteUri));
+        }
+
+        [Fact]
+        public void IsValidUrl_DifferentThanBaseAddressWithAllowRedirectToAnyDomainTrue_IsValid()
+        {
+            _fixture.Options.AllowRedirectToAnyDomain = true;
             var baseUrl = new Uri($"http://localhost:1324");
             var url = new Uri($"http://localhost:1325");
             _fixture.Options.BaseAddress = baseUrl;

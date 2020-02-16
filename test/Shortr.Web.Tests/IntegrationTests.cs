@@ -43,10 +43,11 @@ namespace Shortr.Web.Tests
         [Fact]
         public async Task RoundTrip()
         {
+            _fixture.ShortrOptionsConfiguration = o => o.BaseAddress = new Uri("https://nugt.net");
             var options = _fixture.Provider.GetRequiredService<IOptions<ShortrOptions>>().Value;
             var client = _fixture.GetClient();
 
-            const string longUrl = "https://nugettrends.com/packages?months=12&ids=Sentry";
+            const string longUrl = "https://nugt.net/packages?months=12&ids=Sentry";
             var shorten = $"/{options.ShortenUrlPath}?url={HttpUtility.UrlEncode(longUrl)}";
 
             var response = await client.PutAsync(shorten, null);
@@ -95,9 +96,43 @@ namespace Shortr.Web.Tests
         }
 
         [Fact]
-        public async Task Put_TargetUrlPartOfBaseAddress_Created()
+        public async Task Put_SameDomainDefaultOptions_Created()
         {
             _fixture.ShortrOptionsConfiguration = o => o.BaseAddress = new Uri("http://nugt.net");
+            var options = _fixture.Provider.GetRequiredService<IOptions<ShortrOptions>>().Value;
+            var client = _fixture.GetClient();
+
+            const string longUrl = "http://nugt.net/packages?months=12&ids=Sentry";
+            var shorten = $"/{options.ShortenUrlPath}?url={HttpUtility.UrlEncode(longUrl)}";
+
+            var response = await client.PutAsync(shorten, null);
+
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Put_DifferentDomainDefaultOptions_BadRequest()
+        {
+            _fixture.ShortrOptionsConfiguration = o => o.BaseAddress = new Uri("http://nugt.net");
+            var options = _fixture.Provider.GetRequiredService<IOptions<ShortrOptions>>().Value;
+            var client = _fixture.GetClient();
+
+            const string longUrl = "http://nugettrends.com/packages?months=12&ids=Sentry";
+            var shorten = $"/{options.ShortenUrlPath}?url={HttpUtility.UrlEncode(longUrl)}";
+
+            var response = await client.PutAsync(shorten, null);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Put_AllowRedirectToAnyDomainTrue_TargetUrlPartOfBaseAddress_Created()
+        {
+            _fixture.ShortrOptionsConfiguration = o =>
+            {
+                o.AllowRedirectToAnyDomain = true;
+                o.BaseAddress = new Uri("http://nugt.net");
+            };
             var options = _fixture.Provider.GetRequiredService<IOptions<ShortrOptions>>().Value;
             var client = _fixture.GetClient();
 
