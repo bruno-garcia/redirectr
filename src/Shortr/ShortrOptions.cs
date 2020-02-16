@@ -46,7 +46,7 @@ namespace Shortr
         /// <summary>
         /// Whether to allow redirection to any URL
         /// </summary>
-        public bool AllowRedirectToAnyDomain { get; set; } = false;
+        public bool AllowRedirectToAnyDomain { get; set; }
 
         /// <summary>
         /// Used to compare against destination URLs
