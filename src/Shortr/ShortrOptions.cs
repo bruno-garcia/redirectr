@@ -12,7 +12,7 @@ namespace Shortr
         internal const int DefaultMaxUrlLength = 2048;
 
         // NOTE: This is very naïve. A URL such as https://duckduckgo.com/?q=naïve is totally valid.
-        public const string DefaultCharactersWhitelistRegexPattern =
+        private const string DefaultCharactersWhitelistRegexPattern =
             @"^[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\-._~:\/?#[\]\@\!\$\&\'\(\)\*\+\,\;\=]+$";
 
         [Required(ErrorMessage = "White list of characters regex is required to validate URLs to be shortened.")]

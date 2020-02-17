@@ -21,7 +21,7 @@ namespace Shortr.Web
 
                 var schema = new SchemaCreation(connection);
                 await schema.CreateTable(CancellationToken.None);
-;            }
+            }
             await host.RunAsync();
         }
 

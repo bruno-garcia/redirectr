@@ -14,7 +14,7 @@ namespace Shortr.Npgsql
     public class NpgsqlShortrStore : IShortrStore
     {
         private readonly NpgsqlShortrOptions _options;
-        private int _initialized = 0;
+        private int _initialized;
 
         public NpgsqlShortrStore(NpgsqlShortrOptions options)
         {
