@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace Shortr
@@ -26,19 +27,30 @@ namespace Shortr
         {
             var higherBound = Characters.Length;
 
+            #if NETSTANDARD2_0
+            var randomBuffer = new byte[4];
+            #else
             Span<byte> randomBuffer = stackalloc byte[4];
+            #endif
             var stringBaseBuffer = ArrayPool<char>.Shared.Rent(_keyLength);
             try
             {
                 for (var i = 0; i < _keyLength; i++)
                 {
                     _randomNumberGenerator.GetBytes(randomBuffer);
+#if NETSTANDARD2_0
+                    var generatedValue = Math.Abs(BitConverter.ToInt32(randomBuffer, 0));
+#else
                     var generatedValue = Math.Abs(BitConverter.ToInt32(randomBuffer));
+#endif
                     var index = generatedValue % higherBound;
                     stringBaseBuffer[i] = Characters[index];
                 }
-
+#if NETSTANDARD2_0
+                return new string(stringBaseBuffer.Take(_keyLength).ToArray());
+#else
                 return new string(stringBaseBuffer[.._keyLength]);
+#endif
             }
             finally
             {

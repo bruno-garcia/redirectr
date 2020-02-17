@@ -1,7 +1,6 @@
 env:
   global:
     - DOTNET_CLI_TELEMETRY_OPTOUT=1
-    - AndroidSdkDirectory=../../android-sdk/android-sdk-macosx
 branches:
   only:
     - master
@@ -14,6 +13,7 @@ matrix:
       dist: bionic
 script:
   - curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 3.1.100
+  - curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 2.1.507
   - export PATH=$PATH:~/.dotnet
   - ./build.sh
 after_success:

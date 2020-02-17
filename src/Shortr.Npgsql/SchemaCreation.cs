@@ -16,9 +16,16 @@ namespace Shortr.Npgsql
         {
             const string getUrlQuery =
                 "CREATE TABLE IF NOT EXISTS shortened_urls (key varchar(100) PRIMARY KEY, url varchar(2048) NOT NULL, ttl integer NULL);";
-            await using var connection = new NpgsqlConnection(_connectionString);
+#if !NETSTANDARD2_0
+            await
+#endif
+            using var connection = new NpgsqlConnection(_connectionString);
             await connection.OpenAsync(token);
-            await using var command = new NpgsqlCommand(getUrlQuery, connection);
+
+#if !NETSTANDARD2_0
+            await
+#endif
+            using var command = new NpgsqlCommand(getUrlQuery, connection);
 
             await command.ExecuteNonQueryAsync(token).ConfigureAwait(false);
         }

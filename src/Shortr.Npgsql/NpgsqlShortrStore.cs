@@ -35,7 +35,10 @@ namespace Shortr.Npgsql
             const string getUrlQuery = "SELECT url FROM shortened_urls WHERE key = @key;";
             await using var connection = new NpgsqlConnection(_options.ConnectionString);
             await connection.OpenAsync(token);
-            await using var command = new NpgsqlCommand(getUrlQuery, connection);
+#if !NETSTANDARD2_0
+            await
+#endif
+            using var command = new NpgsqlCommand(getUrlQuery, connection);
 
             command.Parameters.AddWithValue("key", key);
 
@@ -52,7 +55,10 @@ namespace Shortr.Npgsql
             const string getUrlQuery = "SELECT key FROM shortened_urls WHERE url = @url;";
             await using var connection = new NpgsqlConnection(_options.ConnectionString);
             await connection.OpenAsync(token);
-            await using var command = new NpgsqlCommand(getUrlQuery, connection);
+#if !NETSTANDARD2_0
+            await
+#endif
+            using var command = new NpgsqlCommand(getUrlQuery, connection);
 
             command.Parameters.AddWithValue("url", url);
 
@@ -67,9 +73,15 @@ namespace Shortr.Npgsql
             }
 
             const string getUrlQuery = "INSERT INTO shortened_urls (key, url, ttl) VALUES (@key, @url, @ttl);";
-            await using var connection = new NpgsqlConnection(_options.ConnectionString);
+#if !NETSTANDARD2_0
+            await
+#endif
+            using var connection = new NpgsqlConnection(_options.ConnectionString);
             await connection.OpenAsync(token);
-            await using var command = new NpgsqlCommand(getUrlQuery, connection);
+#if !NETSTANDARD2_0
+            await
+#endif
+            using var command = new NpgsqlCommand(getUrlQuery, connection);
 
             command.Parameters.AddWithValue("key", options.Key);
             command.Parameters.AddWithValue("url", options.Url);

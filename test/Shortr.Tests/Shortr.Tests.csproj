@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -13,8 +13,12 @@
     <PackageReference Include="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Shortr\Shortr.csproj" />
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
+    <ProjectReference Include="..\..\src\Shortr\Shortr.csproj" Properties="TargetFramework=netstandard2.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.1'">
+    <ProjectReference Include="..\..\src\Shortr\Shortr.csproj" Properties="TargetFramework=netstandard2.0" />
   </ItemGroup>
 
 </Project>
