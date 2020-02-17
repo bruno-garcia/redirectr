@@ -20,7 +20,7 @@ namespace Shortr.Tests
         public void Dispose_DisposesInnerRng()
         {
             var rng = Substitute.For<RandomNumberGenerator>();
-            using var target = new KeyGenerator(randomNumberGenerator: rng);
+            using var target = new KeyGenerator(10, rng);
             target.Dispose();
             rng.Received(1).Dispose();
         }

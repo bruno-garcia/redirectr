@@ -43,11 +43,10 @@ namespace Microsoft.AspNetCore.Builder
                         return;
                     }
 
-                    bool useTtl;
+                    var useTtl = options.AllowDomainTtl;
                     var intTtl = 0;
-                    if ((useTtl = options.AllowDomainTtl
-                                  && context.Request.Query.TryGetValue("ttl", out var ttl)
-                                  && int.TryParse(ttl, out intTtl))
+                    if (useTtl && context.Request.Query.TryGetValue("ttl", out var ttl)
+                               && int.TryParse(ttl, out intTtl)
                         || !(await store.GetKey(url, context.RequestAborted) is {} key))
                     {
                         key = generator.Generate();
